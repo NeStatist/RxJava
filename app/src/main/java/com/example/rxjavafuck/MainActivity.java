@@ -6,11 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.rxjavafuck.network.NetManager;
-
 public class MainActivity extends AppCompatActivity {
 
     private MainPresenter presenter = new MainPresenter();
+    private MainPresenter.TaskR.Task5 task5 = new MainPresenter.TaskR.Task5();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -21,7 +20,9 @@ public class MainActivity extends AppCompatActivity {
        // presenter.example();
        // presenter.user();
        // presenter.bang();
-        presenter.maybe();
+
+        task5.maybeReturn1();
+
 
     }
 }

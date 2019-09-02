@@ -40,7 +40,7 @@ public class MainPresenter {
     }
 
     @SuppressLint("CheckResult")
-    public void user (){
+    public void user() {
         String tag = "story";
         App.getInstanse().getApi().example(0, tag)
                 .toObservable()
@@ -52,9 +52,10 @@ public class MainPresenter {
                 .subscribe((io.reactivex.functions.Consumer<? super User>) user -> Log.d(
                         "User", "User " + user.getUsername() + "Karma " + user.getKarma()), Throwable::printStackTrace);
     }
+
     @SuppressLint("CheckResult")
     void bang() {
-         Maybe.create(new MaybeOnSubscribe<Boolean>() {
+        Maybe.create(new MaybeOnSubscribe<Boolean>() {
             @Override
             public void subscribe(MaybeEmitter<Boolean> emitter) throws Exception {
                 if (new Random().nextBoolean()) {
@@ -66,19 +67,55 @@ public class MainPresenter {
                 }
             }
         })
-                .subscribe(s -> Log.d("TAG", s + " Bang"), throwable -> throwable.printStackTrace());
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean s) throws Exception {
+                        Log.d("TAG", s + " Bang");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
 
     }
 
-    public void maybe(){
-        Disposable subscribe = Maybe.create((MaybeOnSubscribe<String>) emitter -> {
-            if (new Random().nextBoolean()) {
-                emitter.onSuccess("Bang");
-                emitter.onComplete();
-            } else {
-                emitter.onComplete();
-            }
-        }).subscribe(s -> Log.d("TAG", " " + s), throwable -> throwable.printStackTrace());
+
+    static class TaskR {
+    Maybe<String> maybeReturn() {
+
+            return Maybe.create(new MaybeOnSubscribe<String>() {
+                @Override
+                public void subscribe(MaybeEmitter<String> emitter) throws Exception {
+                    if(new Random().nextBoolean()){
+                        emitter.onSuccess("Bang");
+                        emitter.onComplete();
+                    }else {
+                        emitter.onComplete();
+                    }
+                }
+            }).subscribeOn(Schedulers.io());
+    }
+
+    public static class Task5 {
+        private TaskR aTaskR = new TaskR();
+
+        @SuppressLint("CheckResult")
+        public void maybeReturn1() {
+
+            aTaskR.maybeReturn()
+                    .toSingle("You're live")
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            Log.d("TAG", "" + s);
+                        }
+                    });
+        }
+
+    }
     }
 
 }
+
