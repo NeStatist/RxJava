@@ -20,10 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
        // presenter.example();
        // presenter.user();
-        presenter.bang();
-     //   for (int i = 0; i < 10; i++) {
+       // presenter.bang();
+        presenter.maybe();
 
-
-        //}
     }
 }

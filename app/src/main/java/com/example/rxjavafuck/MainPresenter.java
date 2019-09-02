@@ -66,17 +66,19 @@ public class MainPresenter {
                 }
             }
         })
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean s) throws Exception {
-                       Log.d("TAG", s + " Bang");
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
+                .subscribe(s -> Log.d("TAG", s + " Bang"), throwable -> throwable.printStackTrace());
 
     }
+
+    public void maybe(){
+        Disposable subscribe = Maybe.create((MaybeOnSubscribe<String>) emitter -> {
+            if (new Random().nextBoolean()) {
+                emitter.onSuccess("Bang");
+                emitter.onComplete();
+            } else {
+                emitter.onComplete();
+            }
+        }).subscribe(s -> Log.d("TAG", " " + s), throwable -> throwable.printStackTrace());
+    }
+
 }
