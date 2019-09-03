@@ -18,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
        // presenter.example();
-       // presenter.user();
+      //  presenter.user();
        // presenter.bang();
        // task5.maybeReturn1();
-        presenter.task7();
+        //presenter.task7();
+        presenter.task8();
 
 
 

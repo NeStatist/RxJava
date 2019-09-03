@@ -18,6 +18,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -143,8 +144,31 @@ public class MainPresenter {
                     }
                 });
                     }
+     @SuppressLint("CheckResult")
+     void task8 (){
+         Observable.zip(App.getInstanse().getApi().example(0, tag)
+                         .subscribeOn(Schedulers.io())
+                         .doOnSuccess(story -> Log.d("TAG", "1:" + Thread.currentThread().getName()))
+                         .toObservable(),
 
+                 App.getInstanse().getApi().example(1, tag)
+                         .subscribeOn(Schedulers.io())
+                         .doOnSuccess(story -> Log.d("TAG", "2:" + Thread.currentThread().getName()))
+                         .toObservable(),
 
+                 (example, example2) -> {
+                     List<Hit> hits = new ArrayList<>();
+                     hits.addAll(example.getHits());
+                     hits.addAll(example2.getHits());
+                     return hits;
+                 })
+                 .flatMapIterable(hits -> hits)
+                 .subscribeOn(Schedulers.io())
+                 .subscribe(hit -> {
+                     Log.d("TAG", "Title: " + hit.getTitle()
+                     + "3" + Thread.currentThread().getName());
+                 });
 
+     }
 }
 
