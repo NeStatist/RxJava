@@ -9,10 +9,12 @@ import com.example.rxjavafuck.model.modelUsers.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Maybe;
 import io.reactivex.MaybeEmitter;
 import io.reactivex.MaybeOnSubscribe;
+import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
@@ -22,8 +24,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter {
 
+    String tag = "story";
     public void example() {
-        String tag = "story";
         Disposable title = Single.zip(App.getInstanse().getApi().example(1, tag),
                 App.getInstanse().getApi().example(2, tag),
                 (example, example2) -> {
@@ -81,8 +83,7 @@ public class MainPresenter {
 
     }
 
-
-    static class TaskR {
+    static class Task4 {
     Maybe<String> maybeReturn() {
 
             return Maybe.create(new MaybeOnSubscribe<String>() {
@@ -98,13 +99,14 @@ public class MainPresenter {
             }).subscribeOn(Schedulers.io());
     }
 
-    public static class Task5 {
-        private TaskR aTaskR = new TaskR();
+    static class Task5 {
+
+        private Task4 aTask4 = new Task4();
 
         @SuppressLint("CheckResult")
-        public void maybeReturn1() {
+        void maybeReturn1() {
 
-            aTaskR.maybeReturn()
+            aTask4.maybeReturn()
                     .toSingle("You're live")
                     .subscribe(new Consumer<String>() {
                         @Override
@@ -116,6 +118,33 @@ public class MainPresenter {
 
     }
     }
+    @SuppressLint("CheckResult")
+    void task7(){
+
+        Observable.zip(Observable.range(0, 10),
+                Observable.interval(1, TimeUnit.SECONDS),
+                (integer, aLong) -> integer)
+                .buffer(2)
+                .flatMapIterable(new Function<List<Integer>, Iterable<Integer>>(){
+                    @Override
+                    public Iterable<Integer> apply(List<Integer> integers) throws Exception {
+                        return integers;
+                    }
+                }).flatMap(new Function<Integer, ObservableSource<Example>>() {
+            @Override
+            public ObservableSource<Example> apply(Integer integer) throws Exception {
+                return App.getInstanse().getApi().example(integer, tag).toObservable();
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<Example>() {
+                    @Override
+                    public void accept(Example story) throws Exception {
+                        Log.d("Page", "" + story.getPage());
+                    }
+                });
+                    }
+
+
 
 }
 

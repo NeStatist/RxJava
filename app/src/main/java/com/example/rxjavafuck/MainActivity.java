@@ -9,7 +9,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
 
     private MainPresenter presenter = new MainPresenter();
-    private MainPresenter.TaskR.Task5 task5 = new MainPresenter.TaskR.Task5();
+    private MainPresenter.Task4.Task5 task5 = new MainPresenter.Task4.Task5();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -20,8 +20,11 @@ public class MainActivity extends AppCompatActivity {
        // presenter.example();
        // presenter.user();
        // presenter.bang();
+       // task5.maybeReturn1();
+        presenter.task7();
 
-        task5.maybeReturn1();
+
+
 
 
     }
