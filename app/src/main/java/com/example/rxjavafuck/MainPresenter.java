@@ -59,7 +59,7 @@ public class MainPresenter {
     void bang() {
         Maybe.create(new MaybeOnSubscribe<Boolean>() {
             @Override
-            public void subscribe(MaybeEmitter<Boolean> emitter) throws Exception {
+            public void subscribe(MaybeEmitter<Boolean> emitter) {
                 if (new Random().nextBoolean()) {
                     emitter.onSuccess(true);
                     emitter.onComplete();
@@ -71,12 +71,12 @@ public class MainPresenter {
         })
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean s) throws Exception {
+                    public void accept(Boolean s) {
                         Log.d("TAG", s + " Bang");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         throwable.printStackTrace();
                     }
                 });
@@ -88,7 +88,7 @@ public class MainPresenter {
 
             return Maybe.create(new MaybeOnSubscribe<String>() {
                 @Override
-                public void subscribe(MaybeEmitter<String> emitter) throws Exception {
+                public void subscribe(MaybeEmitter<String> emitter) {
                     if(new Random().nextBoolean()){
                         emitter.onSuccess("Bang");
                         emitter.onComplete();
@@ -110,7 +110,7 @@ public class MainPresenter {
                     .toSingle("You're live")
                     .subscribe(new Consumer<String>() {
                         @Override
-                        public void accept(String s) throws Exception {
+                        public void accept(String s) {
                             Log.d("TAG", "" + s);
                         }
                     });
@@ -127,18 +127,18 @@ public class MainPresenter {
                 .buffer(2)
                 .flatMapIterable(new Function<List<Integer>, Iterable<Integer>>(){
                     @Override
-                    public Iterable<Integer> apply(List<Integer> integers) throws Exception {
+                    public Iterable<Integer> apply(List<Integer> integers) {
                         return integers;
                     }
                 }).flatMap(new Function<Integer, ObservableSource<Example>>() {
             @Override
-            public ObservableSource<Example> apply(Integer integer) throws Exception {
+            public ObservableSource<Example> apply(Integer integer) {
                 return App.getInstanse().getApi().example(integer, tag).toObservable();
             }
         }).subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<Example>() {
                     @Override
-                    public void accept(Example story) throws Exception {
+                    public void accept(Example story) {
                         Log.d("Page", "" + story.getPage());
                     }
                 });
