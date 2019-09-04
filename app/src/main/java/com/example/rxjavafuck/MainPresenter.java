@@ -16,6 +16,7 @@ import io.reactivex.MaybeEmitter;
 import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
@@ -170,5 +171,39 @@ public class MainPresenter {
                  });
 
      }
+
+     void task9(){
+         Observable.zip(Observable.range(0, 10),
+                 Observable.interval(1, TimeUnit.SECONDS),
+                 (integer, aLong) -> integer)
+                 .doOnNext(new Consumer<Integer>() {
+                     @Override
+                     public void accept(Integer integer) throws Exception {
+                         if(integer == 7){ throw new Exception();
+                         }
+                     }
+                 })
+                 .subscribeOn(Schedulers.io())
+                 .subscribe(new Observer<Integer>() {
+                     @Override
+                     public void onSubscribe(Disposable d) {
+                         Log.d("TAG", "Subscribed");
+                     }
+                     @Override
+                     public void onNext(Integer integer) {
+                         Log.d("TAG", "" + integer);
+                     }
+                     @Override
+                     public void onError(Throwable e) {
+                         Log.d("TAG", "error!!");
+                     }
+                     @Override
+                     public void onComplete() {
+                     }
+                 });
+     }
+     
+
 }
+
 
