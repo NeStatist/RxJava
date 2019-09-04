@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import io.reactivex.Maybe;
 import io.reactivex.MaybeEmitter;
 import io.reactivex.MaybeOnSubscribe;
@@ -19,10 +18,12 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
+
+import static android.content.ContentValues.TAG;
 
 public class MainPresenter {
 
@@ -202,8 +203,67 @@ public class MainPresenter {
                      }
                  });
      }
-     
+        void task10(){
+            BehaviorSubject<Integer> integerBehaviorSubject = BehaviorSubject.create();
+            integerBehaviorSubject.subscribe(getFirstObserver());
+            integerBehaviorSubject.onNext(1);
+            integerBehaviorSubject.onNext(2);
+            integerBehaviorSubject.onNext(3);
+            integerBehaviorSubject.subscribe(getSecondObserver());
+            integerBehaviorSubject.onNext(4);
+            integerBehaviorSubject.onNext(5);
+            integerBehaviorSubject.onNext(6);
+            integerBehaviorSubject.onComplete();
+        }
+    private Observer<Integer> getFirstObserver() {
+        return new Observer<Integer>() {
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.d(TAG, " First onSubscribe : " + d.isDisposed());
+            }
+
+            @Override
+            public void onNext(Integer value) {
+
+                Log.d(TAG, " First onNext value : " + value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                Log.d(TAG, " First onError : " + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, " First onComplete");
+            }
+        };
+    }
+
+    private Observer<Integer> getSecondObserver(){
+        return new Observer<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.d(TAG, " Second onSubscribe : " + d.isDisposed());
+            }
+            @Override
+            public void onNext(Integer integer) {
+                Log.d(TAG, "" + integer);
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, " Second onError : " + e.getMessage());
+            }
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "Second Observer completed");
+            }
+        };
+    }
 
 }
+
 
 
