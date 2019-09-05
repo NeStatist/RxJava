@@ -2,10 +2,8 @@ package com.example.rxjavafuck.network
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -51,14 +49,12 @@ class NetManager {
             return builder.build()
         }
     }
-
     private fun createGson(): Gson {
         return GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setLenient()
                 .create()
     }
-
     companion object {
         private var restAPI: RestApi? = null
         private var INSTANCE: NetManager? = null

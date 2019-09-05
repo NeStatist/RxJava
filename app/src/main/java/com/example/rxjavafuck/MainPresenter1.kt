@@ -6,28 +6,21 @@ import com.example.rxjavafuck.core.App
 import com.example.rxjavafuck.model.Example
 import com.example.rxjavafuck.model.Hit
 import com.example.rxjavafuck.model.ModelTask
-import com.example.rxjavafuck.model.modelUsers.User
 import java.util.ArrayList
 import java.util.Random
 import java.util.concurrent.TimeUnit
-import io.reactivex.Maybe
-import io.reactivex.MaybeOnSubscribe
-import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.Observer
-import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
-import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import android.content.ContentValues.TAG
+import io.reactivex.*
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
+
 
 class MainPresenter {
 
     private val tag = "story"
-
 
     @SuppressLint("CheckResult")
     fun example() {
@@ -93,7 +86,6 @@ class MainPresenter {
             private val aTask4 = Task4()
             @SuppressLint("CheckResult")
             fun maybeReturn1() {
-
                 aTask4.maybeReturn()
                         .toSingle("You're live")
                         .subscribe { s -> Log.d("TAG", "" + s) }
@@ -136,10 +128,9 @@ class MainPresenter {
         .flatMapIterable { hits -> hits }
                 .subscribeOn(Schedulers.io())
                 .subscribe { hit ->
-                    Log.d("TAg", "Title: " + hit.title
+                    Log.d("TAG", "Title: " + hit.title
                             + "3" + Thread.currentThread().name)
                 }
-
     }
 
     internal fun task9() {
@@ -156,16 +147,12 @@ class MainPresenter {
                     override fun onNext(t: Int) {
                         Log.d("TAG", "" + t)
                     }
-
                     override fun onSubscribe(d: Disposable) {
                         Log.d("TAG", "Subscribed")
                     }
-
-
                     override fun onError(e: Throwable) {
                         Log.d("TAG", "error!!")
                     }
-
                     override fun onComplete() {}
                 })
     }
@@ -188,15 +175,12 @@ class MainPresenter {
             override fun onComplete() {
                 Log.d(TAG, " First onComplete")
             }
-
             override fun onSubscribe(d: Disposable) {
                 Log.d(TAG, " First onSubscribe : " + d.isDisposed)
             }
-
             override fun onError(e: Throwable) {
                 Log.d(TAG, " First onError : " + e.message)
             }
-
             override fun onNext(t: Int) {
                 Log.d(TAG, " First onNext value : $t")
 
@@ -208,15 +192,12 @@ class MainPresenter {
                     override fun onSubscribe(d: Disposable) {
                         Log.d(TAG, " Second onSubscribe : " + d.isDisposed)
                     }
-
                     override fun onNext(t: Int) {
                         Log.d(TAG, "" + t)
                     }
-
                     override fun onError(e: Throwable) {
                         Log.d(TAG, " Second onError : " + e.message)
                     }
-
                     override fun onComplete() {
                         Log.d(TAG, "Second onComplete")
                     }
@@ -225,22 +206,35 @@ class MainPresenter {
 
             @SuppressLint("CheckResult")
             internal fun task11() {
-                App.instanse?.api?.example(0, tag)?.toObservable()
-                        ?.flatMap(Function<Example, ObservableSource<ModelTask>> { story ->
+                App.instanse?.api!!.example(0, tag)?.toObservable()
+                        .flatMap { story ->
                             story.hits[2].author.let {
-                                App.instanse?.api?.user(it)
-                                        ?.toObservable()
-                                        ?.map(Function<User, ModelTask> { user ->
-                                            user.username?.let { it1 -> ModelTask(it1, user.karma!!, story.hits[2].title) } })
+                                App.instanse?.api?.user(it)?.toObservable()?.map { user ->
+                                    user.username?.let { it1 -> ModelTask(it1, user.karma!!, story.hits[2].title) } }
                             }
-                        })?.subscribeOn(Schedulers.io())
-                        ?.subscribe(Consumer<ModelTask> { modelTask -> Log.d("LOG", "Username "
-                                + modelTask.username +
-                                " Karma " + modelTask.karma + " Title " + modelTask.title) })
+                        }?.subscribeOn(Schedulers.io())
+                        ?.subscribe { modelTask -> Log.d("LOG", "Username "
+                                + modelTask!!.username +
+                                " Karma " + modelTask.karma + " Title " + modelTask.title) }
             }
 
+
+    internal fun task6(){
+        fun <T> SingleSource<T>.someSingleFun(): Single<T> {
+            return Single.wrap(this)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+        }
+        fun <T> ObservableSource<T>.someObservableFun(): Observable<T> {
+            return Observable.wrap(this)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
         }
 
-
-
-
+        fun <T> MaybeSource<T>.someMaybeFun(): Maybe<T> {
+            return Maybe.wrap(this)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+        }
+    }
+        }

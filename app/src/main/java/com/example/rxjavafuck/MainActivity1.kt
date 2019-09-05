@@ -2,9 +2,9 @@ package com.example.rxjavafuck
 
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-
 import android.os.Build
 import android.os.Bundle
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         //presenter.task8();
         // presenter.task9();
         //presenter.task10();
-       presenter.task11()
+      // presenter.task11();
+        presenter.task6()
 
 
     }

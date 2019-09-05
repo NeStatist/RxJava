@@ -2,8 +2,6 @@ package com.example.rxjavafuck.network
 
 import com.example.rxjavafuck.model.Example
 import com.example.rxjavafuck.model.modelUsers.User
-
-
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
