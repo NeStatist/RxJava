@@ -136,7 +136,7 @@ class MainPresenter {
         .flatMapIterable { hits -> hits }
                 .subscribeOn(Schedulers.io())
                 .subscribe { hit ->
-                    Log.d("TAG", "Title: " + hit.title
+                    Log.d("TAg", "Title: " + hit.title
                             + "3" + Thread.currentThread().name)
                 }
 
